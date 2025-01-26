@@ -39,7 +39,7 @@ public class MsgHandler extends AbstractHandler {
         String content = null;
         try {
             String msgId = wxChatService.asyncChat(wxMessage.getFromUser(), wxMessage.getContent());
-            content ="请点击链接查看 ： " +  liteFlowProperties.getServer() + "/wx/" + msgId;
+            content ="请点击链接查看 ： " +  liteFlowProperties.getServer() + "?msgId=" + msgId;
         } catch (BaseException ex) {
             content = ex.getMessage();
         } catch (Exception ex) {

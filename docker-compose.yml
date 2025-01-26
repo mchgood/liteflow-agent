@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        CUSTOM_ARG: "value" # 如果需要传递构建时的 ARG 参数，可在这里设置
+    container_name: liteflow-agent
+    ports:
+      - "8080:8080"
+    environment:
+      - TZ=Asia/Shanghai
+      - JAVA_OPTS=-Xms512m -Xmx512m -Djava.security.egd=file:/dev/./urandom
+      - ARGS=
+    volumes:
+      - ./logs:/app/logs # 如果需要将日志或其他文件挂载到本地，可以配置卷
+    networks:
+      - app-network
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge

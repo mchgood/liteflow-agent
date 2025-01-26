@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>问题与回答展示</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+        }
+        .box {
+            margin-bottom: 20px;
+        }
+        .box h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .box p {
+            margin: 0;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="box" id="question-box">
+        <h3>原始问题</h3>
+        <p id="question-content">正在加载问题...</p>
+    </div>
+    <div class="box" id="answer-box">
+        <h3>回答展示</h3>
+        <div id="answer-content">正在加载回答...</div>
+    </div>
+</div>
+
+<!-- 引入 marked.js -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+    // 获取 URL 中的 msgId 参数
+    function getMsgIdFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get("msgId");
+    }
+
+    // 使用 AJAX 请求数据
+    function fetchData(url) {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", url, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        resolve(JSON.parse(xhr.responseText));
+                    } else {
+                        reject("请求失败，状态码：" + xhr.status);
+                    }
+                }
+            };
+            xhr.send();
+        });
+    }
+
+    // 加载问题和答案
+    async function loadContent() {
+        const msgId = getMsgIdFromURL();
+        if (!msgId) {
+            document.getElementById("question-content").textContent =
+                "未提供 msgId 参数！";
+            document.getElementById("answer-content").textContent =
+                "无法加载回答内容。";
+            return;
+        }
+
+        // 拼接请求地址
+        const url = `/wx/${msgId}`;
+        try {
+            // 发起请求
+            const data = await fetchData(url);
+
+            // 显示问题
+            document.getElementById("question-content").textContent = data.question;
+
+            // 使用 marked.js 解析 Markdown 并展示答案
+            console.log(typeof marked); // 调试 marked 类型
+            const answerHTML = marked.marked(data.answer);
+
+            document.getElementById("answer-content").innerHTML = answerHTML;
+        } catch (error) {
+            document.getElementById("question-content").textContent =
+                "加载问题失败。";
+            document.getElementById("answer-content").textContent =
+                "加载回答失败。";
+            console.error(error);
+        }
+    }
+
+    // 加载内容
+    loadContent();
+</script>
+</body>
+</html>
