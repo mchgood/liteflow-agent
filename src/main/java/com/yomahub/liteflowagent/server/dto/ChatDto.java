@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.beans.BeanUtils;
 
+import java.util.Date;
+
 @Data
 @Accessors(chain = true)
 public class ChatDto {
@@ -28,6 +30,8 @@ public class ChatDto {
     public static ChatPo convert(ChatDto chatDto) {
         ChatPo po = new ChatPo();
         BeanUtils.copyProperties(chatDto, po);
+        po.setCreateTime(new Date());
+        po.setUpdateTime(new Date());
         return po;
     }
 

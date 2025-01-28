@@ -29,8 +29,8 @@ CREATE TABLE `t_chat` (
   `answer` longtext COLLATE utf8mb4_general_ci COMMENT '回答',
   `conversation_id` varchar(32) COLLATE utf8mb4_general_ci NOT NULL COMMENT '问答 id',
   `user_id` varchar(32) COLLATE utf8mb4_general_ci NOT NULL COMMENT '用户 id',
-  `create_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL  COMMENT '更新时间',
   PRIMARY KEY (`id`),
   KEY `conversation_Id_idx` (`conversation_id`) USING BTREE,
   KEY `uid_create_time_idx` (`user_id`,`create_time`) USING BTREE
